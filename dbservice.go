@@ -12,15 +12,18 @@ import (
 )
 
 // DbService is ...
-type DbService interface {
-	open()
-	list() (bool, error)
-	close()
+type DbService struct {
+	logger *log.Logger
 }
 
-type dbService struct{}
+// NewDBService is ...
+func NewDBService(logger *log.Logger) *DbService {
+	return &DbService{
+		logger: logger,
+	}
+}
 
-func (dbService) list() (bool, error) {
+func (d *DbService) list() (bool, error) {
 	log.Println("db service called")
 	db, err := sql.Open("mysql", "root:mysqlgolang@/golangpoc")
 	defer db.Close()
@@ -80,8 +83,8 @@ func (dbService) list() (bool, error) {
 	return true, nil
 }
 
-func (dbService) open() {
-	log.Println("db service open....")
+func (d *DbService) open() {
+	d.logger.Println("db service open....")
 	db, err := sql.Open("mysql", "root:mysqlgolang@/golangpoc")
 	defer db.Close()
 	if err != nil {
@@ -94,6 +97,6 @@ func (dbService) open() {
 	}
 }
 
-func (dbService) close() {
-	log.Println("db service close....")
+func (d *DbService) close() {
+	d.logger.Println("db service close....")
 }
